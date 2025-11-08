@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompilerOptions
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
@@ -119,6 +120,27 @@ kotlin {
         }
     }
 
+    if (supportedPlatforms.contains(TargetPlatform.WasmJs)) {
+        @OptIn(ExperimentalWasmDsl::class)
+        wasmJs {
+            useCommonJs()
+            nodejs {
+                testTask {
+                    useKarma {
+                        useChromeHeadless()
+                    }
+                }
+            }
+            browser {
+                testTask {
+                    useKarma {
+                        useChromeHeadless()
+                    }
+                }
+            }
+        }
+    }
+
     sourceSets {
         all {
             languageSettings.apply {
@@ -154,6 +176,14 @@ kotlin {
 
         if (supportedPlatforms.contains(TargetPlatform.Js)) {
             getByName("jsMain") {
+                dependencies {
+                    api(npm("firebase", "10.12.2"))
+                }
+            }
+        }
+
+        if (supportedPlatforms.contains(TargetPlatform.WasmJs)) {
+            getByName("wasmJsMain") {
                 dependencies {
                     api(npm("firebase", "10.12.2"))
                 }
