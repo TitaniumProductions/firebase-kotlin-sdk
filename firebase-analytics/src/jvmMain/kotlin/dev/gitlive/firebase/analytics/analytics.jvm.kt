@@ -6,10 +6,10 @@ import dev.gitlive.firebase.FirebaseException
 import kotlin.time.Duration
 
 public actual val Firebase.analytics: FirebaseAnalytics
-    get() = TODO("Not yet implemented")
+    get() = FirebaseAnalytics()
 
 public actual fun Firebase.analytics(app: FirebaseApp): FirebaseAnalytics {
-    TODO("Not yet implemented")
+    return FirebaseAnalytics()
 }
 
 public actual class FirebaseAnalytics {
@@ -18,7 +18,7 @@ public actual class FirebaseAnalytics {
     public actual fun resetAnalyticsData() {}
     public actual fun setAnalyticsCollectionEnabled(enabled: Boolean) {}
     public actual fun setSessionTimeoutInterval(sessionTimeoutInterval: Duration) {}
-    public actual suspend fun getSessionId(): Long? = TODO("Not yet implemented")
+    public actual suspend fun getSessionId(): Long? = null
     public actual fun setDefaultEventParameters(parameters: Map<String, String>) {}
     public actual fun logEvent(name: String, parameters: Map<String, Any>?) {}
 

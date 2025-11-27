@@ -2,24 +2,41 @@
 
 package dev.gitlive.firebase
 
-import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.modules.SerializersModule
-import kotlinx.serialization.modules.polymorphic
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonNull
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.buildJsonArray
+import kotlinx.serialization.json.buildJsonObject
+
+public fun Any?.toJsonElement(): JsonElement = when (this) {
+    null -> JsonNull
+    is JsonElement -> this
+    is String -> JsonPrimitive(this)
+    is Number -> JsonPrimitive(this)
+    is Boolean -> JsonPrimitive(this)
+    is Map<*, *> -> buildJsonObject {
+        forEach { (key, value) ->
+            if (key is String) {
+                put(key, value.toJsonElement())
+            }
+        }
+    }
+    is Iterable<*> -> buildJsonArray {
+        forEach { value ->
+            add(value.toJsonElement())
+        }
+    }
+    is Array<*> -> buildJsonArray {
+        forEach { value ->
+            add(value.toJsonElement())
+        }
+    }
+    else -> JsonPrimitive(toString())
+}
 
 public val json: Json = Json {
     ignoreUnknownKeys = true
-    serializersModule = anySerializersModule
-}
-
-private val anySerializersModule = SerializersModule {
-    polymorphic(Any::class) {
-        subclass(String::class, String.serializer())
-        subclass(Double::class, Double.serializer())
-        subclass(Long::class, Long.serializer())
-        subclass(Int::class, Int.serializer())
-        subclass(Boolean::class, Boolean.serializer())
-    }
 }
 
 public inline fun <reified T> T.asJsObject(): JsAny = stringToJsObject(json.encodeToString(this))

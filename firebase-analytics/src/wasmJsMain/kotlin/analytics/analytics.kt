@@ -19,7 +19,7 @@ public actual class FirebaseAnalytics(internal val js: dev.gitlive.firebase.anal
         name: String,
         parameters: Map<String, Any>?,
     ) {
-        dev.gitlive.firebase.analytics.externals.logEvent(js, name, parameters?.asJsObject())
+        dev.gitlive.firebase.analytics.externals.logEvent(js, name, parameters?.toJsonElement()?.asJsObject())
     }
 
     public actual fun setUserProperty(name: String, value: String) {
